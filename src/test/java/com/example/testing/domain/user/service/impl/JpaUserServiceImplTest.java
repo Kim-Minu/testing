@@ -16,6 +16,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,11 +37,11 @@ class JpaUserServiceImplTest {
                 new User(3L, "user3", "test@3test.com")
         );
 
-        when(userRepository.findAll()).thenReturn(users);
+        given(userRepository.findAll()).willReturn(users);
 
         assertThat(userService.getAllUsers()).hasSize(3);
 
-        verify(userRepository, times(1)).findAll();
+        then(userRepository).should(times(1)).findAll();
 
     }
 
@@ -47,35 +49,40 @@ class JpaUserServiceImplTest {
     void getUserById() {
         var user = new User(1L, "user1", "test1@test.com");
 
-        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(user));
+        given(userRepository.findById(1L)).willReturn(java.util.Optional.of(user));
 
         var result = userService.getUserById(1L);
 
         assertThat(result).isEqualTo(user);
-        verify(userRepository, times(1)).findById(1L);
+
+        then(userRepository).should(times(1)).findById(1L);
+
     }
 
     @Test
     void getUserById_NotFound() {
-        when(userRepository.findById(1L)).thenReturn(java.util.Optional.empty());
+        given(userRepository.findById(1L)).willReturn(java.util.Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> userService.getUserById(1L));
 
-        verify(userRepository, times(1)).findById(1L);
+        then(userRepository).should(times(1)).findById(1L);
+
     }
 
     @Test
     void createUser_ValidUser() {
+
         var user = new User(null, "user1", "test1@test.com");
         var savedUser = new User(1L, "user1", "test1@test.com");
 
-        when(userRepository.save(user)).thenReturn(savedUser);
+        given(userRepository.save(user)).willReturn(savedUser);
 
         var result = userService.createUser(user);
 
         assertThat(result).isEqualTo(savedUser);
 
-        verify(userRepository, times(1)).save(user);
+        then(userRepository).should(times(1)).save(user);
+
     }
 
     @Test
@@ -83,7 +90,8 @@ class JpaUserServiceImplTest {
         var user = new User(null, null, "test1@test.com");
 
         assertThrows(IllegalArgumentException.class, () -> userService.createUser(user));
-        verify(userRepository, never()).save(any());
+
+        then(userRepository).should(never()).save(any());
     }
 
     @Test
@@ -92,7 +100,9 @@ class JpaUserServiceImplTest {
 
         assertThrows(IllegalArgumentException.class, () -> userService.createUser(user));
 
-        verify(userRepository, never()).save(any());
+        then(userRepository).should(never()).save(any());
     }
+
+
 
 }
