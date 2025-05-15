@@ -1,8 +1,8 @@
 package com.example.testing.domain.user.service.impl;
 
+import com.example.testing.domain.user.dto.UserCreateRequestDto;
 import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.repository.UserRepository;
-import com.example.testing.domain.user.service.UserService;
 import com.example.testing.global.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,12 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.*;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -72,33 +70,35 @@ class JpaUserServiceImplTest {
     @Test
     void createUser_ValidUser() {
 
-        var user = new User(null, "user1", "test1@test.com");
+
+        var userCreateRequestDto = new UserCreateRequestDto("user1", "test1@test.com");
+
         var savedUser = new User(1L, "user1", "test1@test.com");
 
-        given(userRepository.save(user)).willReturn(savedUser);
+        given(userRepository.save(any())).willReturn(savedUser);
 
-        var result = userService.createUser(user);
+        var result = userService.createUser(userCreateRequestDto);
 
         assertThat(result).isEqualTo(savedUser);
 
-        then(userRepository).should(times(1)).save(user);
+        then(userRepository).should(times(1)).save(any());
 
     }
 
     @Test
     void createUser_MissingUsername() {
-        var user = new User(null, null, "test1@test.com");
+        var userCreateRequestDto = new UserCreateRequestDto("user1", "test1@test.com");
 
-        assertThrows(IllegalArgumentException.class, () -> userService.createUser(user));
+        assertThrows(IllegalArgumentException.class, () -> userService.createUser(userCreateRequestDto));
 
         then(userRepository).should(never()).save(any());
     }
 
     @Test
     void createUser_InvalidEmail() {
-        var user = new User(null, "user1", "invalid-email");
+        var userCreateRequestDto = new UserCreateRequestDto("user1", "test1@test.com");
 
-        assertThrows(IllegalArgumentException.class, () -> userService.createUser(user));
+        assertThrows(IllegalArgumentException.class, () -> userService.createUser(userCreateRequestDto));
 
         then(userRepository).should(never()).save(any());
     }

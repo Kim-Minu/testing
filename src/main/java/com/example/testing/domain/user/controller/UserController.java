@@ -1,5 +1,6 @@
 package com.example.testing.domain.user.controller;
 
+import com.example.testing.domain.user.dto.UserCreateRequestDto;
 import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public User createUser(@RequestBody UserCreateRequestDto requestDto) {
+        return userService.createUser(requestDto);
     }
 }

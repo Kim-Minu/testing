@@ -1,11 +1,11 @@
 package com.example.testing.domain.user.service.impl;
 
 
+import com.example.testing.domain.user.dto.UserCreateRequestDto;
 import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.repository.UserRepository;
 import com.example.testing.domain.user.service.UserService;
 import com.example.testing.global.exception.EntityNotFoundException;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,32 +36,8 @@ public class JpaUserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User user) {
-
-        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
-            throw new IllegalArgumentException("Username is required.");
-        }
-        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
-            throw new IllegalArgumentException("Email is required.");
-        }
-        if (!isValidEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Invalid email format.");
-        }
-
-
-        return userRepository.save(user);
+    public User createUser(UserCreateRequestDto requestDto) {
+        return userRepository.save(requestDto.toEntity());
     }
-
-
-    /**
-     * 이메일 형식이 유효한지 검증하는 메서드
-     *
-     * @param email 검증할 이메일 문자열
-     * @return 유효한 이메일 형식이면 true, 아니면 false
-     */
-    private boolean isValidEmail(String email) {
-        return EMAIL_PATTERN.matcher(email).matches();
-    }
-
 
 }
