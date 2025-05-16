@@ -9,16 +9,11 @@ import com.example.testing.global.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Service
 public class JpaUserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[A-Za-z0-9+_.-]+@(.+)$"
-    );
 
     public JpaUserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;

@@ -5,7 +5,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Builder
 public class FieldErrorResponse {
     private String filed;

@@ -92,6 +92,7 @@ public class ControllerExceptionHandler {
                 ErrorResponse.builder()
                         .message(e.getMessage())
                         .status(HttpStatus.BAD_REQUEST.value())
+                        .errors(List.of())
                         .code(e.getErrorCode())
                     .build(),
                 HttpStatus.BAD_REQUEST
@@ -109,6 +110,7 @@ public class ControllerExceptionHandler {
                 ErrorResponse.builder()
                         .message(ErrorCode.METHOD_NOT_ALLOWED.getMessage())
                         .status(ErrorCode.METHOD_NOT_ALLOWED.getStatus())
+                        .errors(List.of())
                         .code(ErrorCode.METHOD_NOT_ALLOWED.getCode())
                         .build(),
                 HttpStatus.METHOD_NOT_ALLOWED
@@ -124,6 +126,7 @@ public class ControllerExceptionHandler {
                 ErrorResponse.builder()
                         .message(ErrorCode.HANDLE_ACCESS_DENIED.getMessage())
                         .status(ErrorCode.HANDLE_ACCESS_DENIED.getStatus())
+                        .errors(List.of())
                         .code(ErrorCode.HANDLE_ACCESS_DENIED.getCode())
                     .build(),
                 HttpStatus.valueOf(ErrorCode.HANDLE_ACCESS_DENIED.getStatus())
@@ -136,8 +139,9 @@ public class ControllerExceptionHandler {
 
         return new ResponseEntity<>(
                 ErrorResponse.builder()
-                        .message(e.getMessage().isBlank() ? e.getErrorCode().getMessage() : e.getMessage())
+                        .message(e.getMessage() != null && !e.getMessage().isBlank() ? e.getMessage() : e.getErrorCode().getMessage())
                         .status(e.getErrorCode().getStatus())
+                        .errors(List.of())
                         .code(e.getErrorCode().getCode())
                     .build(),
                 HttpStatus.valueOf(e.getErrorCode().getStatus())
@@ -156,6 +160,7 @@ public class ControllerExceptionHandler {
                 ErrorResponse.builder()
                         .message(e.getMessage())
                         .status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus())
+                        .errors(List.of())
                         .code(ErrorCode.INTERNAL_SERVER_ERROR.getCode())
                     .build(),
                 HttpStatus.INTERNAL_SERVER_ERROR
@@ -171,12 +176,12 @@ public class ControllerExceptionHandler {
                 ErrorResponse.builder()
                         .message( "존재하지 않는 URL입니다. : " + e.getRequestURL())
                         .status(ErrorCode.NOT_FOUND_URL.getStatus())
+                        .errors(List.of())
                         .code(ErrorCode.NOT_FOUND_URL.getCode())
                     .build(),
                 HttpStatus.NOT_FOUND
         );
 
     }
-
 
 }

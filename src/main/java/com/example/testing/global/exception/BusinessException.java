@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-
 public class BusinessException extends RuntimeException {
     private ErrorCode errorCode;
 

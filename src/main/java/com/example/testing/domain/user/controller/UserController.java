@@ -3,33 +3,33 @@ package com.example.testing.domain.user.controller;
 import com.example.testing.domain.user.dto.UserCreateRequestDto;
 import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        User user = userService.getUserById(id);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PostMapping
-    public User createUser(@RequestBody UserCreateRequestDto requestDto) {
-        return userService.createUser(requestDto);
+    public ResponseEntity<User> createUser(@RequestBody @Validated UserCreateRequestDto requestDto) {
+        return ResponseEntity.ok(userService.createUser(requestDto));
     }
+
 }

@@ -1,21 +1,17 @@
 package com.example.testing.domain.user.service;
 
+import com.example.testing.base.BaseServiceTest;
 import com.example.testing.domain.user.dto.UserCreateRequestDto;
 import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-@SpringBootTest
-@Transactional
-class UserServiceTest {
+class UserServiceTest extends BaseServiceTest {
 
     @Autowired
     private UserService userService;

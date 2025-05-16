@@ -1,14 +1,13 @@
 package com.example.testing.domain.user.service.impl;
 
+import com.example.testing.base.BaseServiceImplTest;
 import com.example.testing.domain.user.dto.UserCreateRequestDto;
 import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.repository.UserRepository;
 import com.example.testing.global.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
@@ -18,8 +17,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-class JpaUserServiceImplTest {
+class JpaUserServiceImplTest extends BaseServiceImplTest {
 
     @Mock
     UserRepository userRepository;
