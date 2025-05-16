@@ -5,17 +5,14 @@ import com.example.testing.domain.user.dto.UserCreateRequestDto;
 import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.testing.global.exception.ErrorCode.ENTITY_NOT_FOUND;
+import static com.example.testing.global.exception.ErrorCode.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 class UserControllerTest extends BaseControllerTest {
@@ -23,10 +20,12 @@ class UserControllerTest extends BaseControllerTest {
     @Autowired
     UserRepository userRepository;
 
+    List<User> users;
+
     @BeforeEach
-    @Transactional
     public void setUp() {
-        List<User> users = List.of(
+
+        users = List.of(
                 new User(null, "user1", "user1@test.com"),
                 new User(null, "user2", "user2@test.com"),
                 new User(null, "user3", "user3@test.com")
@@ -37,7 +36,7 @@ class UserControllerTest extends BaseControllerTest {
         userRepository.saveAll(users);
     }
 
-    
+
     @Test
     @DisplayName("모든 사용자 조회")
     void getAllUsers() {
@@ -52,7 +51,11 @@ class UserControllerTest extends BaseControllerTest {
                 .hasStatusOk()
                 .bodyJson();
 
-        result.extractingPath("$[0].id").isEqualTo(1);
+        result.extractingPath("$.userList[0].username").isEqualTo(users.get(0).getUsername());
+        result.extractingPath("$.userList[0].email").isEqualTo(users.get(0).getEmail());
+
+        result.extractingPath("$.userList[1].username").isEqualTo(users.get(1).getUsername());
+        result.extractingPath("$.userList[1].email").isEqualTo(users.get(1).getEmail());
 
     }
 
@@ -65,7 +68,7 @@ class UserControllerTest extends BaseControllerTest {
         @DisplayName("사용자 ID로 조회")
         void getUserById() {
 
-            Long userId = 1L;
+            Long userId = users.getFirst().getId();
 
             var result = mockMvcTester
                     .get()
@@ -77,8 +80,8 @@ class UserControllerTest extends BaseControllerTest {
                     .hasStatusOk()
                     .bodyJson();
 
-            result.extractingPath("$.id").isEqualTo(1);
-
+            result.extractingPath("$.username").isEqualTo(users.getFirst().getUsername());
+            result.extractingPath("$.email").isEqualTo(users.getFirst().getEmail());
         }
 
         @Test
@@ -144,12 +147,36 @@ class UserControllerTest extends BaseControllerTest {
                     .exchange()
                     .assertThat()
                     .apply(print())
-                    .hasStatus(400)
+                    .hasStatus(INVALID_INPUT_VALUE.getStatus())
                     .bodyJson();
 
             result.extractingPath("$.errors").isNotEmpty();
+            result.extractingPath("$.message").asString().contains(INVALID_INPUT_VALUE.getMessage());
 
         }
 
+        @Test
+        @DisplayName("사용자 등록 - 이메일 중복")
+        void createUser_EmailDuplicate() throws JsonProcessingException {
+
+            // 이미 존재하는 이메일로 사용자 등록 시도
+            var existingEmail = users.getFirst().getEmail();
+            var userCreateRequestDto = new UserCreateRequestDto("user1", existingEmail);
+
+            var result = mockMvcTester
+                    .post()
+                    .uri("/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(userCreateRequestDto))
+                    .accept(MediaType.APPLICATION_JSON)
+                    .exchange()
+                    .assertThat()
+                    .apply(print())
+                    .hasStatus(EMAIL_DUPLICATE.getStatus())
+                    .bodyJson();
+
+            result.extractingPath("$.message").asString().contains(EMAIL_DUPLICATE.getMessage());
+
+        }
     }
 }

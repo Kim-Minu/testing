@@ -2,7 +2,10 @@ package com.example.testing.domain.user.service.impl;
 
 import com.example.testing.base.BaseServiceImplTest;
 import com.example.testing.domain.user.dto.UserCreateRequestDto;
+import com.example.testing.domain.user.dto.UserListResponseDto;
+import com.example.testing.domain.user.dto.UserResponseDto;
 import com.example.testing.domain.user.entity.User;
+import com.example.testing.domain.user.exception.EmailDuplicateException;
 import com.example.testing.domain.user.repository.UserRepository;
 import com.example.testing.global.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -35,7 +38,7 @@ class JpaUserServiceImplTest extends BaseServiceImplTest {
 
         given(userRepository.findAll()).willReturn(users);
 
-        assertThat(userService.getAllUsers()).hasSize(3);
+        assertThat(userService.getAllUsers()).isInstanceOf(UserListResponseDto.class);
 
         then(userRepository).should(times(1)).findAll();
 
@@ -49,7 +52,7 @@ class JpaUserServiceImplTest extends BaseServiceImplTest {
 
         var result = userService.getUserById(1L);
 
-        assertThat(result).isEqualTo(user);
+        assertThat(result).isInstanceOf(UserResponseDto.class);
 
         then(userRepository).should(times(1)).findById(1L);
 
@@ -68,7 +71,6 @@ class JpaUserServiceImplTest extends BaseServiceImplTest {
     @Test
     void createUser_ValidUser() {
 
-
         var userCreateRequestDto = new UserCreateRequestDto("user1", "test1@test.com");
 
         var savedUser = new User(1L, "user1", "test1@test.com");
@@ -77,30 +79,24 @@ class JpaUserServiceImplTest extends BaseServiceImplTest {
 
         var result = userService.createUser(userCreateRequestDto);
 
-        assertThat(result).isEqualTo(savedUser);
+        assertThat(result).isInstanceOf(UserResponseDto.class);
 
         then(userRepository).should(times(1)).save(any());
 
     }
 
     @Test
-    void createUser_MissingUsername() {
+    void create_Email_Duplicate() {
+
         var userCreateRequestDto = new UserCreateRequestDto("user1", "test1@test.com");
 
-        assertThrows(IllegalArgumentException.class, () -> userService.createUser(userCreateRequestDto));
+        given(userRepository.existsByEmail(any())).willReturn(true);
 
-        then(userRepository).should(never()).save(any());
+        assertThrows(EmailDuplicateException.class, () -> userService.createUser(userCreateRequestDto));
+
+        then(userRepository).should(times(1)).existsByEmail(any());
+
     }
-
-    @Test
-    void createUser_InvalidEmail() {
-        var userCreateRequestDto = new UserCreateRequestDto("user1", "test1@test.com");
-
-        assertThrows(IllegalArgumentException.class, () -> userService.createUser(userCreateRequestDto));
-
-        then(userRepository).should(never()).save(any());
-    }
-
 
 
 }

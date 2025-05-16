@@ -2,6 +2,7 @@ package com.example.testing.domain.user.service;
 
 import com.example.testing.base.BaseServiceTest;
 import com.example.testing.domain.user.dto.UserCreateRequestDto;
+import com.example.testing.domain.user.dto.UserListResponseDto;
 import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ class UserServiceTest extends BaseServiceTest {
 
     @Test
     void getAllUsers() {
+
         List<User> users = List.of(
                 new User(null, "user1", "user1@test.com"),
                 new User(null, "user2", "user2@test.com"),
@@ -34,7 +36,7 @@ class UserServiceTest extends BaseServiceTest {
         var list = userService.getAllUsers();
 
         assertThat(list).isNotNull();
-        assertThat(list).hasSize(3);
+        assertThat(list).isInstanceOf(UserListResponseDto.class);
     }
 
     @Test

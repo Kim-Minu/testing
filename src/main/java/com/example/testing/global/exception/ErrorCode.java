@@ -16,8 +16,12 @@ public enum ErrorCode {
     INVALID_TYPE_VALUE(400, "C005", "Invalid Type Value"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
     HANDLE_ACCESS_UNAUTHORIZED(401, "C006", "Access is UNAUTHORIZED"),
-    NOT_FOUND_URL(404, "C006", "Invalid URL");
+    NOT_FOUND_URL(404, "C006", "Invalid URL"),
 
+
+    EMAIL_DUPLICATE(409, "M001", "이미 사용 중인 이메일입니다.")
+
+    ;
     private int status;
     private String code;
     private String message;
