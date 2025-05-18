@@ -16,3 +16,8 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: update
+
+jwt:
+  secret: your-secret-key-should-be-very-long-and-secure-at-least-32-bytes
+  access-token-validity-in-minutes: 30
+  refresh-token-validity-in-days: 7

@@ -26,7 +26,7 @@ class JpaUserServiceImplTest extends BaseServiceImplTest {
     UserRepository userRepository;
 
     @InjectMocks
-    JpaUserServiceImpl userService;
+    UserServiceImpl userService;
 
     @Test
     void getAllUsers() {

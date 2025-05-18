@@ -4,7 +4,6 @@ package com.example.testing.domain.user.service.impl;
 import com.example.testing.domain.user.dto.UserCreateRequestDto;
 import com.example.testing.domain.user.dto.UserListResponseDto;
 import com.example.testing.domain.user.dto.UserResponseDto;
-import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.exception.EmailDuplicateException;
 import com.example.testing.domain.user.repository.UserRepository;
 import com.example.testing.domain.user.service.UserService;
@@ -12,11 +11,11 @@ import com.example.testing.global.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class JpaUserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    public JpaUserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

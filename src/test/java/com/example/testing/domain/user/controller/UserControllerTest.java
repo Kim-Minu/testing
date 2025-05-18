@@ -5,10 +5,13 @@ import com.example.testing.domain.user.dto.UserCreateRequestDto;
 import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,6 +24,8 @@ class UserControllerTest extends BaseControllerTest {
     UserRepository userRepository;
 
     List<User> users;
+
+    private final String BASE_URL = "/api/v1/users";
 
     @BeforeEach
     public void setUp() {
@@ -39,17 +44,9 @@ class UserControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("모든 사용자 조회")
-    void getAllUsers() {
+    void getAllUsers() throws Exception {
 
-        var result = mockMvcTester
-                .get()
-                .uri("/users")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .assertThat()
-                .apply(print())
-                .hasStatusOk()
-                .bodyJson();
+        var result = apiCallForGetMethod(BASE_URL, HttpStatus.OK);
 
         result.extractingPath("$.userList[0].username").isEqualTo(users.get(0).getUsername());
         result.extractingPath("$.userList[0].email").isEqualTo(users.get(0).getEmail());
@@ -58,6 +55,8 @@ class UserControllerTest extends BaseControllerTest {
         result.extractingPath("$.userList[1].email").isEqualTo(users.get(1).getEmail());
 
     }
+
+
 
 
     @Nested
@@ -72,7 +71,7 @@ class UserControllerTest extends BaseControllerTest {
 
             var result = mockMvcTester
                     .get()
-                    .uri("/users/{userId}", userId)
+                    .uri(BASE_URL+"/{userId}", userId)
                     .accept(MediaType.APPLICATION_JSON)
                     .exchange()
                     .assertThat()
@@ -88,11 +87,11 @@ class UserControllerTest extends BaseControllerTest {
         @DisplayName("사용자 ID로 조회 - 사용자 없음")
         void getUserById_NotFound() {
 
-            Long nonExistentId = 999L;
+            Long nonExistentId = 0L;
 
             var result = mockMvcTester
                     .get()
-                    .uri("/users/{userId}", nonExistentId)
+                    .uri(BASE_URL+"/{userId}", nonExistentId)
                     .accept(MediaType.APPLICATION_JSON)
                     .exchange()
                     .assertThat()
@@ -118,7 +117,7 @@ class UserControllerTest extends BaseControllerTest {
 
             var result = mockMvcTester
                     .post()
-                    .uri("/users")
+                    .uri(BASE_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(userCreateRequestDto))
                     .accept(MediaType.APPLICATION_JSON)
@@ -140,7 +139,7 @@ class UserControllerTest extends BaseControllerTest {
 
             var result = mockMvcTester
                     .post()
-                    .uri("/users")
+                    .uri(BASE_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(invalidUserCreateRequestDto))
                     .accept(MediaType.APPLICATION_JSON)
@@ -165,7 +164,7 @@ class UserControllerTest extends BaseControllerTest {
 
             var result = mockMvcTester
                     .post()
-                    .uri("/users")
+                    .uri(BASE_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(userCreateRequestDto))
                     .accept(MediaType.APPLICATION_JSON)
