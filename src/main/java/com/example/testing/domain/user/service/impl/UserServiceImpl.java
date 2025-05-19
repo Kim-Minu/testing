@@ -8,16 +8,14 @@ import com.example.testing.domain.user.exception.EmailDuplicateException;
 import com.example.testing.domain.user.repository.UserRepository;
 import com.example.testing.domain.user.service.UserService;
 import com.example.testing.global.exception.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public UserListResponseDto getAllUsers() {
