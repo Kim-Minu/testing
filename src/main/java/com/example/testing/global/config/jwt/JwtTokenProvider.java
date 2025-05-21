@@ -1,6 +1,6 @@
 package com.example.testing.global.config.jwt;
 
-import com.example.testing.domain.user.service.impl.UserDetailsServiceImpl;
+import com.example.testing.domain.user.service.impl.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -20,7 +20,7 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private final JwtProperties jwtProperties;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     private Key key;
 

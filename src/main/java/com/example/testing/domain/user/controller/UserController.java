@@ -3,17 +3,14 @@ package com.example.testing.domain.user.controller;
 import com.example.testing.domain.user.dto.UserCreateRequestDto;
 import com.example.testing.domain.user.dto.UserListResponseDto;
 import com.example.testing.domain.user.dto.UserResponseDto;
-import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 

@@ -33,17 +33,19 @@ public class User extends BaseTimeEntity implements UserDetails  {
     @Column(nullable = false)
     private String username;
 
-
-
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
-    private Set<String> roles;
+    private Set<Role> roles;
 
     private boolean enabled = true;
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
+
+    public User(Object id, String user1, String mail) {
+        super();
+    }
 
     @Override
     public String getUsername() {

@@ -19,8 +19,8 @@ public enum ErrorCode {
     NOT_FOUND_URL(404, "C006", "Invalid URL"),
 
 
-    EMAIL_DUPLICATE(409, "M001", "이미 사용 중인 이메일입니다.")
-
+    EMAIL_DUPLICATE(409, "M001", "이미 사용 중인 이메일입니다."),
+    USER_SIGN_IN_FAILED(401, "M002", "아이디 또는 비밀번호를 확인해주세요.")
     ;
     private int status;
     private String code;
