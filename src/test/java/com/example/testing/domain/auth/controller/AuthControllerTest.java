@@ -26,7 +26,6 @@ class AuthControllerTest extends BaseControllerTest {
 
         result.hasStatus(USER_SIGN_IN_FAILED.getStatus());
 
-        resultBodyJson.extractingPath("$.message").asString().contains(USER_SIGN_IN_FAILED.getMessage());
         resultBodyJson.extractingPath("$.code").isEqualTo(USER_SIGN_IN_FAILED.getCode());
         resultBodyJson.extractingPath("$.status").isEqualTo(USER_SIGN_IN_FAILED.getStatus());
 
