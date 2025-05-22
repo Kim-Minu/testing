@@ -21,15 +21,15 @@ public class UserServiceImpl implements UserService {
     public UserListResponseDto getAllUsers() {
 
         return new UserListResponseDto(
-                userRepository.findAll().stream().map(
-                        UserResponseDto::new
-                ).toList()
-
+            userRepository.findAll().stream()
+                    .map(UserResponseDto::new)
+                    .toList()
         );
     }
 
     @Override
     public UserResponseDto getUserById(Long id) {
+
          var user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id));
 

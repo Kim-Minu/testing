@@ -49,9 +49,9 @@ class UserServiceTest extends BaseServiceTest {
         var user = userService.getUserById(savedUser.getId());
 
         assertThat(user).isNotNull();
-        assertThat(user.getId()).isEqualTo(savedUser.getId());
-        assertThat(user.getName()).isEqualTo(savedUser.getName());
-        assertThat(user.getEmail()).isEqualTo(savedUser.getEmail());
+        assertThat(user.id()).isEqualTo(savedUser.getId());
+        assertThat(user.name()).isEqualTo(savedUser.getName());
+        assertThat(user.email()).isEqualTo(savedUser.getEmail());
 
     }
 
@@ -64,10 +64,10 @@ class UserServiceTest extends BaseServiceTest {
         var user = userService.createUser(userCreateRequestDto);
 
         assertThat(user).isNotNull();
-        assertThat(user.getId()).isNotNull();
+        assertThat(user.id()).isNotNull();
 
-        assertThat(user.getEmail()).isEqualTo(userCreateRequestDto.email());
-        assertThat(user.getName()).isEqualTo(userCreateRequestDto.name());
+        assertThat(user.email()).isEqualTo(userCreateRequestDto.email());
+        assertThat(user.name()).isEqualTo(userCreateRequestDto.name());
 
     }
 

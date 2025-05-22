@@ -2,12 +2,9 @@ package com.example.testing.domain.auth.controller;
 
 import com.example.testing.base.BaseControllerTest;
 import com.example.testing.domain.auth.dto.LoginRequestDto;
-import com.example.testing.global.exception.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
-import static com.example.testing.global.exception.ErrorCode.INVALID_INPUT_VALUE;
 import static com.example.testing.global.exception.ErrorCode.USER_SIGN_IN_FAILED;
 
 class AuthControllerTest extends BaseControllerTest {
