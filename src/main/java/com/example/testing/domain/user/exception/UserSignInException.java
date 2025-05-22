@@ -4,14 +4,14 @@ import com.example.testing.global.exception.ErrorCode;
 import com.example.testing.global.exception.InvalidValueException;
 
 public class UserSignInException extends InvalidValueException {
-    private final String username;
+    private final String message;
 
-    public UserSignInException(String username) {
-        super(ErrorCode.USER_SIGN_IN_FAILED.getMessage(), ErrorCode.USER_SIGN_IN_FAILED);
-        this.username = username;
+    public UserSignInException(String message) {
+        super(message, ErrorCode.USER_SIGN_IN_FAILED);
+        this.message = message;
     }
 
-    public String getUsername() {
-        return username;
+    public String getMessage() {
+        return message;
     }
 }

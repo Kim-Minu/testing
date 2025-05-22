@@ -7,6 +7,7 @@ import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
 
@@ -24,9 +25,9 @@ class UserServiceTest extends BaseServiceTest {
     void getAllUsers() {
 
         List<User> users = List.of(
-                new User(null, "user1", "user1@test.com"),
-                new User(null, "user2", "user2@test.com"),
-                new User(null, "user3", "user3@test.com")
+                new User("username4", "user4@test.com", "test1234"),
+                new User("username5", "user5@test.com", "test1234"),
+                new User("username6", "user6@test.com", "test1234")
         );
 
         // ID를 수동으로 설정하지 않기
@@ -42,22 +43,23 @@ class UserServiceTest extends BaseServiceTest {
     @Test
     void getUserById() {
 
-        var newUser = new User(null, "user1", "user1@test.com");
+        var newUser = new User("username3", "user3@test.com", "test1234");
         var savedUser = userRepository.save(newUser);
 
         var user = userService.getUserById(savedUser.getId());
 
         assertThat(user).isNotNull();
         assertThat(user.getId()).isEqualTo(savedUser.getId());
-        assertThat(user.getUsername()).isEqualTo(savedUser.getUsername());
+        assertThat(user.getName()).isEqualTo(savedUser.getName());
         assertThat(user.getEmail()).isEqualTo(savedUser.getEmail());
 
     }
 
     @Test
+    @Rollback(false)
     void createUser() {
 
-        var userCreateRequestDto = new UserCreateRequestDto("user1", "user1@test.com");
+        var userCreateRequestDto = new UserCreateRequestDto("username3", "user3@test.com", "test1234");
 
         var user = userService.createUser(userCreateRequestDto);
 
@@ -65,7 +67,7 @@ class UserServiceTest extends BaseServiceTest {
         assertThat(user.getId()).isNotNull();
 
         assertThat(user.getEmail()).isEqualTo(userCreateRequestDto.email());
-        assertThat(user.getUsername()).isEqualTo(userCreateRequestDto.username());
+        assertThat(user.getName()).isEqualTo(userCreateRequestDto.name());
 
     }
 

@@ -31,9 +31,9 @@ class JpaUserServiceImplTest extends BaseServiceImplTest {
     @Test
     void getAllUsers() {
         var users = List.of(
-                new User(1L, "user1", "test1@test.com"),
-                new User(2L, "user2", "test2@test.com"),
-                new User(3L, "user3", "test@3test.com")
+                new User("username4", "user4@test.com", "test1234"),
+                new User("username5", "user5@test.com", "test1234"),
+                new User("username6", "user6@test.com", "test1234")
         );
 
         given(userRepository.findAll()).willReturn(users);
@@ -46,11 +46,11 @@ class JpaUserServiceImplTest extends BaseServiceImplTest {
 
     @Test
     void getUserById() {
-        var user = new User(1L, "user1", "test1@test.com");
+        var user = new User("username3", "user3@test.com", "test1234");
 
-        given(userRepository.findById(1L)).willReturn(java.util.Optional.of(user));
+        given(userRepository.findById(any())).willReturn(java.util.Optional.of(user));
 
-        var result = userService.getUserById(1L);
+        var result = userService.getUserById(any());
 
         assertThat(result).isInstanceOf(UserResponseDto.class);
 
@@ -71,9 +71,9 @@ class JpaUserServiceImplTest extends BaseServiceImplTest {
     @Test
     void createUser_ValidUser() {
 
-        var userCreateRequestDto = new UserCreateRequestDto("user1", "test1@test.com");
+        var userCreateRequestDto = new UserCreateRequestDto("newUser", "newUser@test.com", "test1234");
 
-        var savedUser = new User(1L, "user1", "test1@test.com");
+        var savedUser = new User("username3", "user3@test.com", "test1234");
 
         given(userRepository.save(any())).willReturn(savedUser);
 
@@ -88,7 +88,7 @@ class JpaUserServiceImplTest extends BaseServiceImplTest {
     @Test
     void create_Email_Duplicate() {
 
-        var userCreateRequestDto = new UserCreateRequestDto("user1", "test1@test.com");
+        var userCreateRequestDto = new UserCreateRequestDto("newUser", "newUser@test.com", "test1234");
 
         given(userRepository.existsByEmail(any())).willReturn(true);
 

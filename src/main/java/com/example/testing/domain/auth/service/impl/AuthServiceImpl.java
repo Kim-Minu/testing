@@ -35,14 +35,21 @@ public class AuthServiceImpl implements AuthService {
             }
 
             String name = authentication.getName();
-            String accessToken = jwtTokenProvider.createAccessToken(name);
-            String refreshToken = jwtTokenProvider.createRefreshToken(name);
 
-            return new TokenResponseDto(accessToken, refreshToken, "Bearer");
+            return createTokenResponseDto(name);
 
         } catch (DisabledException | LockedException | BadCredentialsException e) {
             throw new UserSignInException(e.getMessage());
         }
 
     }
+
+    private TokenResponseDto createTokenResponseDto(String email) {
+
+        String accessToken = jwtTokenProvider.createAccessToken(email);
+        String refreshToken = jwtTokenProvider.createRefreshToken(email);
+
+        return new TokenResponseDto(accessToken, refreshToken, "Bearer");
+    }
+
 }

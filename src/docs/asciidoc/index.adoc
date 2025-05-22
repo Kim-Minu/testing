@@ -1,0 +1,36 @@
+= API Documentation
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+== Introduction
+
+This document provides API documentation for the application.
+
+== Hello API
+
+=== Get Hello Message
+
+==== Request
+
+[source,http,options="nowrap"]
+----
+GET /api/hello HTTP/1.1
+Host: localhost:8080
+----
+
+==== Response
+
+[source,http,options="nowrap"]
+----
+HTTP/1.1 200 OK
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 13
+
+Hello, World!
+----
+
+include::{snippets}/HelloControllerTest/hello/response-body.adoc[] 

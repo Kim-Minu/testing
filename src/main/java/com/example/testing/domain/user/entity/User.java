@@ -6,6 +6,8 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
 import java.util.Set;
@@ -31,7 +33,7 @@ public class User extends BaseTimeEntity implements UserDetails  {
     private String password;
 
     @Column(nullable = false)
-    private String username;
+    private String name;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
@@ -39,17 +41,26 @@ public class User extends BaseTimeEntity implements UserDetails  {
     private Set<Role> roles;
 
     private boolean enabled = true;
+
     private boolean accountNonExpired = true;
+
     private boolean accountNonLocked = true;
+
     private boolean credentialsNonExpired = true;
 
-    public User(Object id, String user1, String mail) {
-        super();
+    public User(String name, String email, String password)  {
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        this.email = email;
+        this.password = passwordEncoder.encode(password);
+        this.name = name;
+        this.roles = Set.of(Role.USER);
     }
 
     @Override
     public String getUsername() {
-        return this.email;
+        return email;
     }
 
     @Override
