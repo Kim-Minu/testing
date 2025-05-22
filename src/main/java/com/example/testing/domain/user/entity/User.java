@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Builder
 /*@Audited
 @EntityListeners(AuditingEntityListener.class)*/
-public class User extends BaseTimeEntity implements UserDetails  {
+public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,14 +40,6 @@ public class User extends BaseTimeEntity implements UserDetails  {
     @Column(name = "role")
     private Set<Role> roles;
 
-    private boolean enabled = true;
-
-    private boolean accountNonExpired = true;
-
-    private boolean accountNonLocked = true;
-
-    private boolean credentialsNonExpired = true;
-
     public User(String name, String email, String password)  {
         this.email = email;
         this.password = new BCryptPasswordEncoder().encode(password);
@@ -55,40 +47,4 @@ public class User extends BaseTimeEntity implements UserDetails  {
         this.roles = Set.of(Role.USER);
     }
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return credentialsNonExpired;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return accountNonLocked;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return accountNonExpired;
-    }
 }

@@ -1,8 +1,9 @@
 package com.example.testing.domain.user.service.impl;
 
 
+import com.example.testing.domain.user.entity.CustomUserDetails;
+import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.repository.UserRepository;
-import com.example.testing.global.exception.EntityNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,7 +20,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        return userRepository.findByEmail(email)
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
+
+        return new CustomUserDetails(user);
     }
 }

@@ -32,10 +32,6 @@ public record UserCreateRequestDto(
                 .email(email)
                 .password(new BCryptPasswordEncoder().encode(password))
                 .roles(roles)
-                .enabled(true)
-                .accountNonExpired(true)
-                .accountNonLocked(true)
-                .credentialsNonExpired(true)
                 .build();
     }
 }
