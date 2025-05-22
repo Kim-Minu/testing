@@ -4,19 +4,16 @@ import com.example.testing.base.BaseControllerTest;
 import com.example.testing.domain.user.dto.UserCreateRequestDto;
 import com.example.testing.domain.user.entity.User;
 import com.example.testing.domain.user.repository.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.List;
 
 import static com.example.testing.global.exception.ErrorCode.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 class UserControllerTest extends BaseControllerTest {
 
@@ -68,41 +65,31 @@ class UserControllerTest extends BaseControllerTest {
 
         @Test
         @DisplayName("사용자 ID로 조회")
-        void getUserById() {
+        void getUserById() throws Exception {
 
             Long userId = users.getFirst().getId();
 
-            var result = mockMvcTester
-                    .get()
-                    .uri(BASE_URL+"/{userId}", userId)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .exchange()
-                    .assertThat()
-                    .apply(print())
-                    .hasStatusOk()
-                    .bodyJson();
+            var result = apiCallForGetMethod(BASE_URL+"/{userId}", userId);
+            var resultBodyJson = result.bodyJson();
 
-            result.extractingPath("$.name").isEqualTo(users.getFirst().getName());
-            result.extractingPath("$.email").isEqualTo(users.getFirst().getEmail());
+            result.hasStatus(HttpStatus.OK);
+
+            resultBodyJson.extractingPath("$.name").isEqualTo(users.getFirst().getName());
+            resultBodyJson.extractingPath("$.email").isEqualTo(users.getFirst().getEmail());
         }
 
         @Test
         @DisplayName("사용자 ID로 조회 - 사용자 없음")
-        void getUserById_NotFound() {
+        void getUserById_NotFound() throws Exception {
 
             Long nonExistentId = 0L;
 
-            var result = mockMvcTester
-                    .get()
-                    .uri(BASE_URL+"/{userId}", nonExistentId)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .exchange()
-                    .assertThat()
-                    .apply(print())
-                    .hasStatus(ENTITY_NOT_FOUND.getStatus())
-                    .bodyJson();
+            var result = apiCallForGetMethod(BASE_URL+"/{userId}", nonExistentId);
+            var resultBodyJson = result.bodyJson();
 
-            result.extractingPath("$.message").asString().contains("User not found with id");
+            result.hasStatus(ENTITY_NOT_FOUND.getStatus());
+            resultBodyJson.extractingPath("$.message").asString().contains("User not found with id");
+
         }
 
     }
@@ -114,70 +101,49 @@ class UserControllerTest extends BaseControllerTest {
 
         @Test
         @DisplayName("사용자 등록")
-        void createUser() throws JsonProcessingException {
+        void createUser() throws Exception {
 
             var userCreateRequestDto = new UserCreateRequestDto("newUser", "newUser@test.com", "test1234");
 
-            var result = mockMvcTester
-                    .post()
-                    .uri(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(userCreateRequestDto))
-                    .accept(MediaType.APPLICATION_JSON)
-                    .exchange()
-                    .assertThat()
-                    .apply(print())
-                    .hasStatusOk()
-                    .bodyJson();
+            var result = apiCallForPostMethod(BASE_URL, userCreateRequestDto);
+            var resultBodyJson = result.bodyJson();
 
-            result.extractingPath("$.name").isEqualTo(userCreateRequestDto.name());
-            result.extractingPath("$.email").isEqualTo(userCreateRequestDto.email());
+            result.hasStatus(HttpStatus.OK);
+
+            resultBodyJson.extractingPath("$.name").isEqualTo(userCreateRequestDto.name());
+            resultBodyJson.extractingPath("$.email").isEqualTo(userCreateRequestDto.email());
         }
 
         @Test
         @DisplayName("사용자 등록 - 잘못된 요청")
-        void createUser_BadRequest() throws JsonProcessingException {
+        void createUser_BadRequest() throws Exception {
 
-            var invalidUserCreateRequestDto = new UserCreateRequestDto("", "invalidEmail", "test1234");
+            var invalidUserCreateRequestDto = new UserCreateRequestDto("", "invalidEmail", "");
 
-            var result = mockMvcTester
-                    .post()
-                    .uri(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(invalidUserCreateRequestDto))
-                    .accept(MediaType.APPLICATION_JSON)
-                    .exchange()
-                    .assertThat()
-                    .apply(print())
-                    .hasStatus(INVALID_INPUT_VALUE.getStatus())
-                    .bodyJson();
+            var result = apiCallForPostMethod(BASE_URL, invalidUserCreateRequestDto);
+            var resultBodyJson = result.bodyJson();
 
-            result.extractingPath("$.errors").isNotEmpty();
-            result.extractingPath("$.message").asString().contains(INVALID_INPUT_VALUE.getMessage());
+            result.hasStatus(INVALID_INPUT_VALUE.getStatus());
+
+            resultBodyJson.extractingPath("$.errors").isNotEmpty();
+            resultBodyJson.extractingPath("$.message").asString().contains(INVALID_INPUT_VALUE.getMessage());
 
         }
 
         @Test
         @DisplayName("사용자 등록 - 이메일 중복")
-        void createUser_EmailDuplicate() throws JsonProcessingException {
+        void createUser_EmailDuplicate() throws Exception {
 
             // 이미 존재하는 이메일로 사용자 등록 시도
             var existingEmail = users.getFirst().getEmail();
             var userCreateRequestDto = new UserCreateRequestDto("user1", existingEmail,"test1234");
 
-            var result = mockMvcTester
-                    .post()
-                    .uri(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(userCreateRequestDto))
-                    .accept(MediaType.APPLICATION_JSON)
-                    .exchange()
-                    .assertThat()
-                    .apply(print())
-                    .hasStatus(EMAIL_DUPLICATE.getStatus())
-                    .bodyJson();
+            var result = apiCallForPostMethod(BASE_URL, userCreateRequestDto);
+            var resultBodyJson = result.bodyJson();
 
-            result.extractingPath("$.message").asString().contains(EMAIL_DUPLICATE.getMessage());
+            result.hasStatus(EMAIL_DUPLICATE.getStatus());
+
+            resultBodyJson.extractingPath("$.message").asString().contains(EMAIL_DUPLICATE.getMessage());
 
         }
     }

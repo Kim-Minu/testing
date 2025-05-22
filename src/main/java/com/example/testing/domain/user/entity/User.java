@@ -49,11 +49,8 @@ public class User extends BaseTimeEntity implements UserDetails  {
     private boolean credentialsNonExpired = true;
 
     public User(String name, String email, String password)  {
-
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
         this.email = email;
-        this.password = passwordEncoder.encode(password);
+        this.password = new BCryptPasswordEncoder().encode(password);
         this.name = name;
         this.roles = Set.of(Role.USER);
     }

@@ -11,7 +11,7 @@ public class EmailDuplicateException extends BusinessException {
     private final String email;
 
     public EmailDuplicateException(String email) {
-        super(ErrorCode.EMAIL_DUPLICATE.getMessage() + email, ErrorCode.EMAIL_DUPLICATE);
+        super(ErrorCode.EMAIL_DUPLICATE.getMessage() + " [" + email + "]", ErrorCode.EMAIL_DUPLICATE);
         this.email = email;
     }
 

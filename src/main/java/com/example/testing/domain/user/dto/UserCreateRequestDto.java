@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
 
@@ -28,12 +27,10 @@ public record UserCreateRequestDto(
         var roles = new HashSet<Role>();
         roles.add(Role.USER);
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
         return User.builder()
                 .name(name)
                 .email(email)
-                .password(passwordEncoder.encode(password))
+                .password(new BCryptPasswordEncoder().encode(password))
                 .roles(roles)
                 .enabled(true)
                 .accountNonExpired(true)
